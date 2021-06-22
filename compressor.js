@@ -20,6 +20,11 @@ inputName.text = doc.name;
 
 var panel = window.add("panel", undefined, "My Panel");
 var btn3 = panel.add("button", undefined, "Compress and Save");
+var btn4 = panel.add("button", undefined, "Rechannel");
+var roughName = window.add("statictext", undefined, "Rough layer name");
+var metalName = window.add("statictext", undefined, "metal layer name");
+var AOName = window.add("statictext", undefined, "AO layer name");
+
 
 slider.onChanging = function () {
     slider.value = Math.round(slider.value);
@@ -46,9 +51,47 @@ btn3.onClick = function () {
     doc.resizeImage(originalWidth, originalHeight);
 };
 
+btn4.onClick = function () {
+    var roughLayer = doc.layers[0];
+    var metalLayer = doc.layers[1];
+    var AOLayer = doc.layers[2];
+
+    doc.activeLayer = roughLayer;
+    advancedBlend(true, false, false);
+
+    doc.activeLayer = metalLayer;
+    advancedBlend(false, true, false);
+
+    doc.activeLayer = AOLayer;
+    advancedBlend(false, false, true);
+};
+
 window.show();
 
-//TAREA HACER COMPRESIONES De POTENCIAS DE DOS
 function nearestPow2(aSize) {
     return Math.round(Math.log(aSize) / Math.log(2));
 }
+
+function advancedBlend(r, g, b) {
+    var actionDesc = new ActionDescriptor();
+    var actionRef = new ActionReference();
+    actionRef.putEnumerated(app.charIDToTypeID('Lyr '),
+                            app.charIDToTypeID('Ordn'),
+                            app.charIDToTypeID('Trgt'));
+    actionDesc.putReference(app.charIDToTypeID('null'), actionRef);
+    var actionDesc2 = new ActionDescriptor();
+    var actionList = new ActionList();
+    //only enable desired channels
+    if (r) {
+        actionList.putEnumerated(app.charIDToTypeID('Chnl'), app.charIDToTypeID('Rd  '));
+    }
+    if (g) {
+        actionList.putEnumerated(app.charIDToTypeID('Chnl'), app.charIDToTypeID('Grn '));
+    }
+    if (b) {
+        actionList.putEnumerated(app.charIDToTypeID('Chnl'), app.charIDToTypeID('Bl  '));
+    }
+    actionDesc2.putList(app.stringIDToTypeID('channelRestrictions'), actionList);
+    actionDesc.putObject(app.charIDToTypeID('T   '), app.charIDToTypeID('Lyr '), actionDesc2);
+    executeAction(app.charIDToTypeID('setd'), actionDesc, DialogModes.NO);
+};
