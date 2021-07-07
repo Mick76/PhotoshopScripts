@@ -1,33 +1,163 @@
 var doc = activeDocument;
 
-var window = new Window("dialog", "Compression Tool");
+//var window = new Window("dialog", "Compression Tool");
+//
+//var closeBtn = window.add("button", undefined, "Close", { name: "cancel" });
+//
+//var inputName = window.add("edittext", undefined, "File Name");
+//inputName.text = doc.name;
+//
+//var panel = window.add("panel", undefined, "Compression settings");
+//
+//var slider = panel.add("slider", undefined, 0, 0, nearestPow2(doc.width));
+//var currValText = panel.add("statictext", undefined, "currValue");
+//currValText.text = slider.value.toString();
+//
+//var currSizeText = panel.add("statictext", undefined, "currSize");
+//currSizeText.text = nearestPow2(doc.width).toString();
+//
+//var btn3 = panel.add("button", undefined, "Compress and Save");
+//var btn4 = panel.add("button", undefined, "Rechannel");
+//var roughName = window.add("statictext", undefined, "Rough layer name");
+//var metalName = window.add("statictext", undefined, "metal layer name");
+//var AOName = window.add("statictext", undefined, "AO layer name");
+//var btnSaveAll = panel.add("button", undefined, "Compress and Save all opened files");
+//var btnLoadAll = panel.add("button", undefined, "Open all files in folder");
+//var inputLoadExtension = window.add("edittext", undefined, "load extension");
+//inputLoadExtension.text = "jpg";
+//var inputSaveExtension = window.add("edittext", undefined, "save extension");
+//inputSaveExtension.text = "png";
+//
+//var megaPanel = window.add("panel", undefined, "Mega Loader And Saver");
+//var btnMegaLoadCompressSaveAll = megaPanel.add("button", undefined, "Load Compress Save");
+//var loadPathText = megaPanel.add("statictext", undefined, "Load Path");
+//var inputLoadPath = megaPanel.add("edittext", undefined, "Load Path");
+//inputLoadPath.text = activeDocument.path;
+//var savePathText = megaPanel.add("statictext", undefined, "Save Path");
+//var inputSavePath = megaPanel.add("edittext", undefined, "Save Path");
+//inputSavePath.text = activeDocument.path;
 
-var closeBtn = window.add("button", undefined, "Close", { name: "cancel" });
+// WINDOW
+// ======
+var window = new Window("dialog");
+window.text = "Dialog";
+window.orientation = "row";
+window.alignChildren = ["center", "top"];
+window.spacing = 10;
+window.margins = 16;
 
-var slider = window.add("slider", undefined, 0, 0, nearestPow2(doc.width));
-//slider.min = 0;
-//slider.max = nearestPow2(doc.width);
-//slider.value = 0;
-//slider.size = [20, 20];
-var currValText = window.add("statictext", undefined, "currValue");
-currValText.text = slider.value.toString();
+// PANEL1
+// ======
+var panel1 = window.add("panel", undefined, undefined, { name: "panel1" });
+panel1.text = "Load";
+panel1.orientation = "column";
+panel1.alignChildren = ["left", "top"];
+panel1.spacing = 10;
+panel1.margins = 10;
 
-var currSizeText = window.add("statictext", undefined, "currSize");
-currSizeText.text = nearestPow2(doc.width).toString();
+var inputLoadPath = panel1.add('edittext {properties: {name: "inputLoadPath"}}');
+inputLoadPath.text = activeDocument.path;
 
-var inputName = window.add("edittext", undefined, "File Name");
+var statictext1 = panel1.add("statictext", undefined, undefined, { name: "statictext1" });
+statictext1.text = "Extension to load";
+
+var inputLoadExtension = panel1.add('edittext {properties: {name: "inputLoadExtension"}}');
+inputLoadExtension.text = "dds";
+
+var btnLoadAll = panel1.add("button", undefined, undefined, { name: "btnLoadAll" });
+btnLoadAll.text = "Open all files in folder";
+
+// PANEL2
+// ======
+var panel2 = window.add("panel", undefined, undefined, { name: "panel2" });
+panel2.text = "Save";
+panel2.orientation = "column";
+panel2.alignChildren = ["left", "top"];
+panel2.spacing = 10;
+panel2.margins = 10;
+
+var inputSavePath = panel2.add('edittext {properties: {name: "inputSavePath"}}');
+inputSavePath.text = activeDocument.path;
+
+var statictext2 = panel2.add("statictext", undefined, undefined, { name: "statictext2" });
+statictext2.text = "Extension to save";
+
+var inputSaveExtension = panel2.add('edittext {properties: {name: "inputSaveExtension"}}');
+inputSaveExtension.text = "png";
+
+var inputName = panel2.add('edittext {properties: {name: "inputName"}}');
 inputName.text = doc.name;
 
-var panel = window.add("panel", undefined, "My Panel");
-var btn3 = panel.add("button", undefined, "Compress and Save");
-var btn4 = panel.add("button", undefined, "Rechannel");
-var roughName = window.add("statictext", undefined, "Rough layer name");
-var metalName = window.add("statictext", undefined, "metal layer name");
-var AOName = window.add("statictext", undefined, "AO layer name");
-var btnSaveAll = panel.add("button", undefined, "Compress and Save all files");
-var inputLoadExtension = window.add("edittext", undefined, "load extension");
-inputLoadExtension.text = "jpg";
-var btnLoadAll = panel.add("button", undefined, "Load all files");
+var btn3 = panel2.add("button", undefined, undefined, { name: "btn3" });
+btn3.text = "Save";
+
+var btnSaveAll = panel2.add("button", undefined, undefined, { name: "btnSaveAll" });
+btnSaveAll.text = "Save all opened documents";
+
+// PANEL3
+// ======
+var panel3 = window.add("panel", undefined, undefined, { name: "panel3" });
+panel3.text = "Compression";
+panel3.orientation = "column";
+panel3.alignChildren = ["left", "top"];
+panel3.spacing = 10;
+panel3.margins = 10;
+
+var statictext3 = panel3.add("statictext", undefined, undefined, { name: "statictext3" });
+statictext3.text = "Mip level";
+
+var currValText = panel3.add("statictext", undefined, undefined, { name: "currValText" });
+currValText.alignment = ["center", "top"];
+
+var slider = panel3.add("slider", undefined, 0, 0, nearestPow2(doc.width));
+slider.preferredSize.width = 100;
+
+currValText.text = slider.value.toString();
+
+var statictext4 = panel3.add("statictext", undefined, undefined, { name: "statictext4" });
+statictext4.text = "Final Resolution:";
+
+var currSizeText = panel3.add("statictext", undefined, undefined, { name: "currSizeText" });
+currSizeText.text = nearestPow2(doc.width).toString();
+currSizeText.alignment = ["center", "top"];
+
+// PANEL4
+// ======
+var panel4 = window.add("panel", undefined, undefined, { name: "panel4" });
+panel4.text = "Combine";
+panel4.orientation = "column";
+panel4.alignChildren = ["left", "top"];
+panel4.spacing = 10;
+panel4.margins = 10;
+
+var btn4 = panel4.add("button", undefined, undefined, { name: "btn4" });
+btn4.text = "combine";
+
+var checkbox1 = panel4.add("checkbox", undefined, undefined, { name: "checkbox1" });
+checkbox1.text = "Specify layer names"; 
+
+var roughName = panel4.add("edittext", undefined, "File Name");
+roughName.text = "Roug layer name";
+
+var metalName = panel4.add("edittext", undefined, "File Name");
+metalName.text = "Metal layer name";
+
+var AOName = panel4.add("edittext", undefined, "File Name");
+AOName.text = "AO layer name";
+
+// PANEL5
+// ======
+var panel5 = panel1.add("panel", undefined, undefined, { name: "panel5" });
+panel5.text = "load compress and save all";
+panel5.orientation = "column";
+panel5.alignChildren = ["left", "top"];
+panel5.spacing = 10;
+panel5.margins = 10;
+
+var btnMegaLoadCompressSaveAll = panel5.add("button", undefined, undefined, { name: "btnMegaLoadCompressSaveAll" });
+btnMegaLoadCompressSaveAll.text = "Load Compress and Save All";
+
+var closeBtn = window.add("button", undefined, "Close", { name: "cancel" });
 
 
 slider.onChanging = function () {
@@ -56,9 +186,23 @@ btn3.onClick = function () {
 };
 
 btn4.onClick = function () {
-    var roughLayer = doc.layers[0];
-    var metalLayer = doc.layers[1];
-    var AOLayer = doc.layers[2];
+
+    if (doc.layers.length >= 3) {
+        var roughLayer = doc.layers[0];
+        var metalLayer = doc.layers[1];
+        var AOLayer = doc.layers[2];
+    }
+    else {
+        return;
+    }
+    
+
+    if (checkbox1.value) {
+        var roughLayer = doc.layers.getByName(roughName.text)
+        var metalLayer = doc.layers.getByName(metalName.text)
+        var AOLayer = doc.layers.getByName(AOName.text)
+    }
+    
 
     doc.activeLayer = roughLayer;
     advancedBlend(true, false, false);
@@ -82,7 +226,7 @@ btnSaveAll.onClick = function () {
     
         //var file = new File(doc.path + "/" + doc.name + ".png");
 
-        if (inputLoadExtension.text == "png") {
+        if (inputSaveExtension.text == "png") {
             var file = new File(documents[i].path + "/" + documents[i].name + ".png");
 
             var opts = new PNGSaveOptions();
@@ -91,7 +235,7 @@ btnSaveAll.onClick = function () {
 
             documents[i].resizeImage(originalWidth, originalHeight);
         }
-        else if (inputLoadExtension.text == "dds") {
+        else if (inputSaveExtension.text == "dds") {
             saveDDS(documents[i].path + "/" + documents[i].name);
         }
 
@@ -102,15 +246,50 @@ btnSaveAll.onClick = function () {
 
 btnLoadAll.onClick = function () {
 
-    var folder = new Folder(activeDocument.path);
+    var folder = new Folder(inputLoadPath.text);
     //var files = folder.getFiles(/\.(jpg?|png?|dds?)$/i);
     var files = folder.getFiles("*." + inputLoadExtension.text);
     for (var i = 0; i < files.length; ++i) {
-        alert(files[i].fsName);
         open(files[i]);
     }
     activeDocument = documents[0];
 
+};
+
+btnMegaLoadCompressSaveAll.onClick = function () {
+    var folder = new Folder(activeDocument.path);
+    //var files = folder.getFiles(/\.(jpg?|png?|dds?)$/i);
+    var files = folder.getFiles("*." + inputLoadExtension.text);
+
+    for (var i = 0; i < files.length; ++i) {
+        //alert(files[i].fsName);
+        open(files[i]);
+
+        activeDocument = documents[0];
+        var originalWidth = activeDocument.width;
+        var originalHeight = activeDocument.height;
+        var resizeWidth = Math.pow(2, slider.value);
+        var resizeHeight = Math.pow(2, slider.value);
+
+        activeDocument.resizeImage(resizeWidth, resizeHeight);
+
+        //var file = new File(doc.path + "/" + doc.name + ".png");
+
+        if (inputSaveExtension.text == "png") {
+            var file = new File(inputSavePath.text + "/" + activeDocument.name + ".png");
+
+            var opts = new PNGSaveOptions();
+
+            activeDocument.saveAs(file, opts, true);
+
+            activeDocument.resizeImage(originalWidth, originalHeight);
+        }
+        else if (inputSaveExtension.text == "dds") {
+            saveDDS(inputSavePath.text + "/" + activeDocument.name);
+        }
+        activeDocument.close(SaveOptions.DONOTSAVECHANGES);
+    }
+    activeDocument = documents[0];
 };
 
 window.show();
