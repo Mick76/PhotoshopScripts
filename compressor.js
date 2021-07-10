@@ -1,54 +1,55 @@
 var doc = activeDocument;
 
-//var window = new Window("dialog", "Compression Tool");
-//
-//var closeBtn = window.add("button", undefined, "Close", { name: "cancel" });
-//
-//var inputName = window.add("edittext", undefined, "File Name");
-//inputName.text = doc.name;
-//
-//var panel = window.add("panel", undefined, "Compression settings");
-//
-//var slider = panel.add("slider", undefined, 0, 0, nearestPow2(doc.width));
-//var currValText = panel.add("statictext", undefined, "currValue");
-//currValText.text = slider.value.toString();
-//
-//var currSizeText = panel.add("statictext", undefined, "currSize");
-//currSizeText.text = nearestPow2(doc.width).toString();
-//
-//var btn3 = panel.add("button", undefined, "Compress and Save");
-//var btn4 = panel.add("button", undefined, "Rechannel");
-//var roughName = window.add("statictext", undefined, "Rough layer name");
-//var metalName = window.add("statictext", undefined, "metal layer name");
-//var AOName = window.add("statictext", undefined, "AO layer name");
-//var btnSaveAll = panel.add("button", undefined, "Compress and Save all opened files");
-//var btnLoadAll = panel.add("button", undefined, "Open all files in folder");
-//var inputLoadExtension = window.add("edittext", undefined, "load extension");
-//inputLoadExtension.text = "jpg";
-//var inputSaveExtension = window.add("edittext", undefined, "save extension");
-//inputSaveExtension.text = "png";
-//
-//var megaPanel = window.add("panel", undefined, "Mega Loader And Saver");
-//var btnMegaLoadCompressSaveAll = megaPanel.add("button", undefined, "Load Compress Save");
-//var loadPathText = megaPanel.add("statictext", undefined, "Load Path");
-//var inputLoadPath = megaPanel.add("edittext", undefined, "Load Path");
-//inputLoadPath.text = activeDocument.path;
-//var savePathText = megaPanel.add("statictext", undefined, "Save Path");
-//var inputSavePath = megaPanel.add("edittext", undefined, "Save Path");
-//inputSavePath.text = activeDocument.path;
-
 // WINDOW
 // ======
 var window = new Window("dialog");
-window.text = "Dialog";
+window.text = "Photoshop Tool";
 window.orientation = "row";
 window.alignChildren = ["center", "top"];
 window.spacing = 10;
 window.margins = 16;
 
+// TPANEL1
+// =======
+var tpanel1 = window.add("tabbedpanel", undefined, undefined, { name: "tpanel1" });
+tpanel1.alignChildren = "fill";
+tpanel1.preferredSize.width = 129.531;
+tpanel1.margins = 0;
+
+// TAB1
+// ====
+var tab1 = tpanel1.add("tab", undefined, undefined, { name: "tab1" });
+tab1.text = "Load";
+tab1.orientation = "column";
+tab1.alignChildren = ["left", "top"];
+tab1.spacing = 10;
+tab1.margins = 10;
+
+// TAB2
+// ====
+var tab2 = tpanel1.add("tab", undefined, undefined, { name: "tab2" });
+tab2.text = "Save";
+tab2.orientation = "column";
+tab2.alignChildren = ["left", "top"];
+tab2.spacing = 10;
+tab2.margins = 10;
+
+// TAB3
+// ====
+var tab3 = tpanel1.add("tab", undefined, undefined, { name: "tab3" });
+tab3.text = "Compress & Combine";
+tab3.orientation = "column";
+tab3.alignChildren = ["left", "top"];
+tab3.spacing = 10;
+tab3.margins = 10;
+
+// TPANEL1
+// =======
+tpanel1.selection = tab1; 
+
 // PANEL1
 // ======
-var panel1 = window.add("panel", undefined, undefined, { name: "panel1" });
+var panel1 = tab1.add("panel", undefined, undefined, { name: "panel1" });
 panel1.text = "Load";
 panel1.orientation = "column";
 panel1.alignChildren = ["left", "top"];
@@ -61,15 +62,19 @@ inputLoadPath.text = activeDocument.path;
 var statictext1 = panel1.add("statictext", undefined, undefined, { name: "statictext1" });
 statictext1.text = "Extension to load";
 
-var inputLoadExtension = panel1.add('edittext {properties: {name: "inputLoadExtension"}}');
-inputLoadExtension.text = "dds";
+//var inputLoadExtension = panel1.add('edittext {properties: {name: "inputLoadExtension"}}');
+//inputLoadExtension.text = "dds";
+
+var loadDropdown1_array = ["jpg", "png", "dds"];
+var loadDropdown1 = panel1.add("dropdownlist", undefined, undefined, { name: "extension", items: loadDropdown1_array });
+loadDropdown1.selection = 0; 
 
 var btnLoadAll = panel1.add("button", undefined, undefined, { name: "btnLoadAll" });
 btnLoadAll.text = "Open all files in folder";
 
 // PANEL2
 // ======
-var panel2 = window.add("panel", undefined, undefined, { name: "panel2" });
+var panel2 = tab2.add("panel", undefined, undefined, { name: "panel2" });
 panel2.text = "Save";
 panel2.orientation = "column";
 panel2.alignChildren = ["left", "top"];
@@ -82,8 +87,9 @@ inputSavePath.text = activeDocument.path;
 var statictext2 = panel2.add("statictext", undefined, undefined, { name: "statictext2" });
 statictext2.text = "Extension to save";
 
-var inputSaveExtension = panel2.add('edittext {properties: {name: "inputSaveExtension"}}');
-inputSaveExtension.text = "png";
+var saveDropdown1_array = ["png", "dds"];
+var saveDropdown1 = panel2.add("dropdownlist", undefined, undefined, { name: "extension", items: saveDropdown1_array });
+saveDropdown1.selection = 0; 
 
 var inputName = panel2.add('edittext {properties: {name: "inputName"}}');
 inputName.text = doc.name;
@@ -92,11 +98,21 @@ var btn3 = panel2.add("button", undefined, undefined, { name: "btn3" });
 btn3.text = "Save";
 
 var btnSaveAll = panel2.add("button", undefined, undefined, { name: "btnSaveAll" });
-btnSaveAll.text = "Save all opened documents";
+btnSaveAll.text = "Save each layer as image";
+
+// GROUP1
+// ======
+var group1 = tab3.add("group", undefined, { name: "Tools" });
+group1.orientation = "row";
+group1.alignChildren = ["left", "center"];
+group1.spacing = 10;
+group1.margins = 0; 
+group1.alignChildren = "fill";
+
 
 // PANEL3
 // ======
-var panel3 = window.add("panel", undefined, undefined, { name: "panel3" });
+var panel3 = group1.add("panel", undefined, undefined, { name: "panel3" });
 panel3.text = "Compression";
 panel3.orientation = "column";
 panel3.alignChildren = ["left", "top"];
@@ -123,7 +139,7 @@ currSizeText.alignment = ["center", "top"];
 
 // PANEL4
 // ======
-var panel4 = window.add("panel", undefined, undefined, { name: "panel4" });
+var panel4 = group1.add("panel", undefined, undefined, { name: "panel4" });
 panel4.text = "Combine";
 panel4.orientation = "column";
 panel4.alignChildren = ["left", "top"];
@@ -133,17 +149,29 @@ panel4.margins = 10;
 var btn4 = panel4.add("button", undefined, undefined, { name: "btn4" });
 btn4.text = "combine";
 
+var combineAllbtn = panel4.add("button", undefined, undefined, { name: "combineAllbtn" });
+combineAllbtn.text = "combine for all groups";
+
+var combineAllSavebtn = panel4.add("button", undefined, undefined, { name: "combineAllSavebtn" });
+combineAllSavebtn.text = "save all combinated sets";
+
 var checkbox1 = panel4.add("checkbox", undefined, undefined, { name: "checkbox1" });
 checkbox1.text = "Specify layer names"; 
 
-var roughName = panel4.add("edittext", undefined, "File Name");
-roughName.text = "Roug layer name";
+var layersDropdown1_array = ["none"];
 
-var metalName = panel4.add("edittext", undefined, "File Name");
-metalName.text = "Metal layer name";
+for (var i = 0; i < doc.artLayers.length; i++) {
+    layersDropdown1_array.push(doc.artLayers[i].name);
+}
 
-var AOName = panel4.add("edittext", undefined, "File Name");
-AOName.text = "AO layer name";
+var roughDropdown1 = panel4.add("dropdownlist", undefined, undefined, { name: "extension", items: layersDropdown1_array });
+roughDropdown1.selection = 0; 
+
+var metalDropdown1 = panel4.add("dropdownlist", undefined, undefined, { name: "extension", items: layersDropdown1_array });
+metalDropdown1.selection = 0; 
+
+var aoDropdown1 = panel4.add("dropdownlist", undefined, undefined, { name: "extension", items: layersDropdown1_array });
+aoDropdown1.selection = 0; 
 
 // PANEL5
 // ======
@@ -176,13 +204,28 @@ btn3.onClick = function () {
     doc.resizeImage(resizeWidth, resizeHeight);
 
     //var file = new File(doc.path + "/" + doc.name + ".png");
-    var file = new File(doc.path + "/" + inputName.text + ".png");
+    //var file = new File(doc.path + "/" + inputName.text + ".png");
+    //
+    //var opts = new PNGSaveOptions();
+    //
+    //doc.saveAs(file, opts, true);
+    //
+    //doc.resizeImage(originalWidth, originalHeight);
 
-    var opts = new PNGSaveOptions();
+    if (saveDropdown1.selection.text == "png") {
+        var file = new File(inputSavePath.text + "/" + inputName.text + ".png");
 
-    doc.saveAs(file, opts, true);
+        var opts = new PNGSaveOptions();
+
+        doc.saveAs(file, opts, true);
+
+    }
+    else if (saveDropdown1.selection.text == "dds") {
+        saveDDS(inputSavePath.text + "/" + inputName.text);
+    }
 
     doc.resizeImage(originalWidth, originalHeight);
+
 };
 
 btn4.onClick = function () {
@@ -198,9 +241,9 @@ btn4.onClick = function () {
     
 
     if (checkbox1.value) {
-        var roughLayer = doc.layers.getByName(roughName.text)
-        var metalLayer = doc.layers.getByName(metalName.text)
-        var AOLayer = doc.layers.getByName(AOName.text)
+        var roughLayer = doc.layers.getByName(roughDropdown1.selection.text)
+        var metalLayer = doc.layers.getByName(metalDropdown1.selection.text)
+        var AOLayer = doc.layers.getByName(aoDropdown1.selection.text)
     }
     
 
@@ -214,43 +257,170 @@ btn4.onClick = function () {
     advancedBlend(false, false, true);
 };
 
-btnSaveAll.onClick = function () {
-    for (var i = 0; i < documents.length; ++i) {
-        activeDocument = documents[i];
-        var originalWidth = documents[i].width;
-        var originalHeight = documents[i].height;
-        var resizeWidth = Math.pow(2, slider.value);
-        var resizeHeight = Math.pow(2, slider.value);
-    
-        documents[i].resizeImage(resizeWidth, resizeHeight);
-    
-        //var file = new File(doc.path + "/" + doc.name + ".png");
+combineAllbtn.onClick = function () {
+    var imgTypeKeys = ["albedo", "AO", "emissive", "metallic", "normal", "roughness"];
 
-        if (inputSaveExtension.text == "png") {
-            var file = new File(documents[i].path + "/" + documents[i].name + ".png");
+    for (var i = 0; i < activeDocument.layerSets.length; i++) {
+        activeDocument.layerSets[i].layerSets.add();
+        activeDocument.layerSets[i].layerSets[0].name = "rgb";
+
+        for (var e = 0; e < activeDocument.layerSets[i].artLayers.length; e++) {
+
+            if (hasKey(activeDocument.layerSets[i].artLayers[e].name, "AO")) {
+                activeDocument.layerSets[i].artLayers[e].move(activeDocument.layerSets[i].layerSets[0], ElementPlacement.INSIDE);
+            }
+            else if (hasKey(activeDocument.layerSets[i].artLayers[e].name, "metallic")) {
+                activeDocument.layerSets[i].artLayers[e].move(activeDocument.layerSets[i].layerSets[0], ElementPlacement.INSIDE);
+            }
+            else if (hasKey(activeDocument.layerSets[i].artLayers[e].name, "roughness")) {
+                activeDocument.layerSets[i].artLayers[e].move(activeDocument.layerSets[i].layerSets[0], ElementPlacement.INSIDE);
+            }
+        }
+
+        if (activeDocument.layerSets[i].layerSets.length > 0) {
+            if (activeDocument.layerSets[i].layerSets[0].artLayers.length == 3) {
+                doc.activeLayer = activeDocument.layerSets[i].layerSets[0].artLayers[2];//ao
+                advancedBlend(true, false, false);
+
+                doc.activeLayer = activeDocument.layerSets[i].layerSets[0].artLayers[1];//metal
+                advancedBlend(false, true, false);
+
+                doc.activeLayer = activeDocument.layerSets[i].layerSets[0].artLayers[0];//roughness
+                advancedBlend(false, false, true);
+            }
+            else {
+                alert("there are more than 3 layers or less than 3 layers in the combination group");
+            }
+        }
+        else {
+            alert("no images for combination found");
+        }
+        
+    }
+
+};
+
+combineAllSavebtn.onClick = function () {
+    //compress
+    var originalWidth = activeDocument.width;
+    var originalHeight = activeDocument.height;
+    var resizeWidth = Math.pow(2, slider.value);
+    var resizeHeight = Math.pow(2, slider.value);
+
+    activeDocument.resizeImage(resizeWidth, resizeHeight);
+
+    //save
+    for (var i = 0; i < activeDocument.layerSets.length; i++) {
+        if (saveDropdown1.selection.text == "png") {
+            var file = new File(inputSavePath.text + "/" + activeDocument.layerSets[i].name + "_mix" + ".png");
 
             var opts = new PNGSaveOptions();
 
-            documents[i].saveAs(file, opts, true);
+            activeDocument.saveAs(file, opts, true);
 
-            documents[i].resizeImage(originalWidth, originalHeight);
         }
-        else if (inputSaveExtension.text == "dds") {
-            saveDDS(documents[i].path + "/" + documents[i].name);
+        else if (saveDropdown1.selection.text == "dds") {
+            saveDDS(inputSavePath.text + "/" + activeDocument.layerSets[i].name + "_mix");
         }
+        activeDocument.layerSets[i].visible = false;
+    }
 
+    //reactivate layers
+    for (var i = 0; i < activeDocument.layerSets.length; i++) {
+        activeDocument.layerSets[i].visible = true;
+    }
+
+    activeDocument.resizeImage(originalWidth, originalHeight);
+
+};
+
+btnSaveAll.onClick = function () {
+    //compress
+    var originalWidth = activeDocument.width;
+    var originalHeight = activeDocument.height;
+    var resizeWidth = Math.pow(2, slider.value);
+    var resizeHeight = Math.pow(2, slider.value);
+
+    activeDocument.resizeImage(resizeWidth, resizeHeight);
+
+    //disable combination layersets
+    for (var i = 0; i < activeDocument.layerSets.length; i++) {
+        activeDocument.layerSets[i].layerSets[0].visible = false;
+    }
+
+    //save
+    for (var i = 0; i < activeDocument.layerSets.length; i++) {
+
+        for (var e = 0; e < activeDocument.layerSets[i].artLayers.length; e++) {
+            if (saveDropdown1.selection.text == "png") {
+                var file = new File(inputSavePath.text + "/" + activeDocument.layerSets[i].artLayers[e].name + ".png");
+
+                var opts = new PNGSaveOptions();
+
+                activeDocument.saveAs(file, opts, true);
+
+            }
+            else if (saveDropdown1.selection.text == "dds") {
+                saveDDS(inputSavePath.text + "/" + activeDocument.layerSets[i].artLayers[e].name);
+            }
+            activeDocument.layerSets[i].artLayers[e].visible = false;
+        }
         
     }
-    activeDocument = documents[0];
+
+    //enable combination layersets
+    for (var i = 0; i < activeDocument.layerSets.length; i++) {
+        activeDocument.layerSets[i].layerSets[0].visible = true;
+    }
+
+    //enable all layers
+    for (var i = 0; i < activeDocument.layerSets.length; i++) {
+        for (var e = 0; e < activeDocument.layerSets[i].artLayers.length; e++) {
+            activeDocument.layerSets[i].artLayers[e].visible = true;
+        }
+    }
+
+    activeDocument.resizeImage(originalWidth, originalHeight);
 };
 
 btnLoadAll.onClick = function () {
 
     var folder = new Folder(inputLoadPath.text);
     //var files = folder.getFiles(/\.(jpg?|png?|dds?)$/i);
-    var files = folder.getFiles("*." + inputLoadExtension.text);
+    //var files = folder.getFiles("*." + inputLoadExtension.text);
+    var imgTypeKeys = ["albedo", "AO", "emissive", "metallic", "normal", "roughness"];
+    var baseNames = [];
+
+    var files = folder.getFiles("*." + loadDropdown1.selection.text);
+    var initialDocName = activeDocument.name;
     for (var i = 0; i < files.length; ++i) {
-        open(files[i]);
+
+        var baseName;
+        for (var e = 0; e < imgTypeKeys.length; e++) {
+            baseName = files[i].name.replace("." + loadDropdown1.selection.text, '');
+            if (hasKey(baseName, imgTypeKeys[e])) {
+                baseName = baseName.replace(imgTypeKeys[e], '');
+
+                if (!existInArr(baseNames, baseName)) {
+                    baseNames.push(baseName);
+                    activeDocument.layerSets.add();
+                    activeDocument.layerSets[0].name = baseName;
+                }
+                break;
+            }
+        }
+
+
+        if (files[i].name != initialDocName) {
+            open(files[i]);
+            documents[1].artLayers[0].duplicate(documents[0].layerSets.getByName(baseName));
+            documents[1].close(SaveOptions.DONOTSAVECHANGES);
+            documents[0].layerSets.getByName(baseName).artLayers[0].name = files[i].name;
+        }
+        else {
+            documents[0].artLayers[0].name = files[i].name;
+            documents[0].artLayers[0].move(documents[0].layerSets.getByName(baseName), ElementPlacement.INSIDE);
+        }
     }
     activeDocument = documents[0];
 
@@ -259,7 +429,8 @@ btnLoadAll.onClick = function () {
 btnMegaLoadCompressSaveAll.onClick = function () {
     var folder = new Folder(activeDocument.path);
     //var files = folder.getFiles(/\.(jpg?|png?|dds?)$/i);
-    var files = folder.getFiles("*." + inputLoadExtension.text);
+    //var files = folder.getFiles("*." + inputLoadExtension.text);
+    var files = folder.getFiles("*." + loadDropdown1.selection.text);
 
     for (var i = 0; i < files.length; ++i) {
         //alert(files[i].fsName);
@@ -275,18 +446,20 @@ btnMegaLoadCompressSaveAll.onClick = function () {
 
         //var file = new File(doc.path + "/" + doc.name + ".png");
 
-        if (inputSaveExtension.text == "png") {
+        if (saveDropdown1.selection.text == "png") {
             var file = new File(inputSavePath.text + "/" + activeDocument.name + ".png");
 
             var opts = new PNGSaveOptions();
 
             activeDocument.saveAs(file, opts, true);
 
-            activeDocument.resizeImage(originalWidth, originalHeight);
         }
-        else if (inputSaveExtension.text == "dds") {
+        else if (saveDropdown1.selection.text == "dds") {
             saveDDS(inputSavePath.text + "/" + activeDocument.name);
         }
+
+        activeDocument.resizeImage(originalWidth, originalHeight);
+
         activeDocument.close(SaveOptions.DONOTSAVECHANGES);
     }
     activeDocument = documents[0];
@@ -296,6 +469,36 @@ window.show();
 
 function nearestPow2(aSize) {
     return Math.round(Math.log(aSize) / Math.log(2));
+}
+
+function hasKey(str, substr) {
+    var e = 0;
+    for (var i = 0; i < str.length; i++) {
+
+        //alert(str[i] + "==" + substr[e]);
+        if (str[i] == substr[e]) {
+            e++;
+        }
+        else {
+            e = 0;
+        }
+
+        if (substr.length == e) {
+            break;
+        }
+    }
+
+    return e == substr.length;
+}
+
+function existInArr(arr, element) {
+    for (var i = 0; i < arr.length; i++) {
+        if (arr[i] == element) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function advancedBlend(r, g, b) {
