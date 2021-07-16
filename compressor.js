@@ -1,3 +1,7 @@
+//activeHistorystate
+//abrir file explorer para seleccionar paths
+
+
 var doc = activeDocument;
 
 // WINDOW
@@ -137,7 +141,7 @@ var currSizeText = panel3.add("statictext", undefined, undefined, { name: "currS
 currSizeText.text = nearestPow2(doc.width).toString();
 currSizeText.alignment = ["center", "top"];
 
-// PANEL4
+// PANEL4 COMBINE
 // ======
 var panel4 = group1.add("panel", undefined, undefined, { name: "panel4" });
 panel4.text = "Combine";
@@ -146,17 +150,36 @@ panel4.alignChildren = ["left", "top"];
 panel4.spacing = 10;
 panel4.margins = 10;
 
-var btn4 = panel4.add("button", undefined, undefined, { name: "btn4" });
-btn4.text = "combine";
 
-var combineAllbtn = panel4.add("button", undefined, undefined, { name: "combineAllbtn" });
-combineAllbtn.text = "combine for all groups";
 
-var combineAllSavebtn = panel4.add("button", undefined, undefined, { name: "combineAllSavebtn" });
-combineAllSavebtn.text = "save all combinated sets";
+// COMBINE TPANEL1
+// =======
+var combineTPanel1 = panel4.add("tabbedpanel", undefined, undefined, { name: "tpanel1" });
+combineTPanel1.alignChildren = "Order Settings";
+combineTPanel1.preferredSize.width = 200;
+combineTPanel1.margins = 0;
 
-var checkbox1 = panel4.add("checkbox", undefined, undefined, { name: "checkbox1" });
-checkbox1.text = "Specify layer names"; 
+// COMBINE TAB1
+// ====
+var combTab1 = combineTPanel1.add("tab", undefined, undefined, { name: "tab1" });
+combTab1.text = "Single group";
+combTab1.orientation = "column";
+combTab1.alignChildren = ["left", "top"];
+combTab1.spacing = 10;
+combTab1.margins = 10;
+
+// COMBINE TAB2
+// ====
+var combTab2 = combineTPanel1.add("tab", undefined, undefined, { name: "tab2" });
+combTab2.text = "Multi group";
+combTab2.orientation = "column";
+combTab2.alignChildren = ["left", "top"];
+combTab2.spacing = 10;
+combTab2.margins = 10;
+
+// single combination
+var checkbox1 = combTab1.add("checkbox", undefined, undefined, { name: "checkbox1" });
+checkbox1.text = "Specify layer names";
 
 var layersDropdown1_array = ["none"];
 
@@ -164,14 +187,42 @@ for (var i = 0; i < doc.artLayers.length; i++) {
     layersDropdown1_array.push(doc.artLayers[i].name);
 }
 
-var roughDropdown1 = panel4.add("dropdownlist", undefined, undefined, { name: "extension", items: layersDropdown1_array });
-roughDropdown1.selection = 0; 
+var roughDropdown1 = combTab1.add("dropdownlist", undefined, undefined, { name: "extension", items: layersDropdown1_array });
+roughDropdown1.selection = 0;
 
-var metalDropdown1 = panel4.add("dropdownlist", undefined, undefined, { name: "extension", items: layersDropdown1_array });
-metalDropdown1.selection = 0; 
+var metalDropdown1 = combTab1.add("dropdownlist", undefined, undefined, { name: "extension", items: layersDropdown1_array });
+metalDropdown1.selection = 0;
 
-var aoDropdown1 = panel4.add("dropdownlist", undefined, undefined, { name: "extension", items: layersDropdown1_array });
+var aoDropdown1 = combTab1.add("dropdownlist", undefined, undefined, { name: "extension", items: layersDropdown1_array });
 aoDropdown1.selection = 0; 
+
+var btn4 = combTab1.add("button", undefined, undefined, { name: "btn4" });
+btn4.text = "combine";
+
+var combineSavebtn = combTab1.add("button", undefined, undefined, { name: "combineAllSavebtn" });
+combineSavebtn.text = "save combination";
+
+//multi combination
+var statictext5 = combTab2.add("statictext", undefined, undefined, { name: "statictext5" });
+statictext5.text = "Combination order";
+
+var orderDropdown1_array = ["AO", "Metal", "Roughness"];
+
+var redDropdown1 = combTab2.add("dropdownlist", undefined, undefined, { name: "extension", items: orderDropdown1_array });
+redDropdown1.selection = 0;
+
+var greenDropdown1 = combTab2.add("dropdownlist", undefined, undefined, { name: "extension", items: orderDropdown1_array });
+greenDropdown1.selection = 1;
+
+var blueDropdown1 = combTab2.add("dropdownlist", undefined, undefined, { name: "extension", items: orderDropdown1_array });
+blueDropdown1.selection = 2; 
+
+var combineAllbtn = combTab2.add("button", undefined, undefined, { name: "combineAllbtn" });
+combineAllbtn.text = "combine for all groups";
+
+var combineAllSavebtn = combTab2.add("button", undefined, undefined, { name: "combineAllSavebtn" });
+combineAllSavebtn.text = "save all combinated sets";
+
 
 // PANEL5
 // ======
@@ -194,6 +245,7 @@ slider.onChanging = function () {
     currSizeText.text = Math.pow(2, slider.value);
 }
 
+//simple save
 btn3.onClick = function () {
 
     var originalWidth = doc.width;
@@ -201,16 +253,8 @@ btn3.onClick = function () {
     var resizeWidth = Math.pow(2, slider.value);
     var resizeHeight = Math.pow(2, slider.value);
 
+    var previousState = doc.activeHistoryState;
     doc.resizeImage(resizeWidth, resizeHeight);
-
-    //var file = new File(doc.path + "/" + doc.name + ".png");
-    //var file = new File(doc.path + "/" + inputName.text + ".png");
-    //
-    //var opts = new PNGSaveOptions();
-    //
-    //doc.saveAs(file, opts, true);
-    //
-    //doc.resizeImage(originalWidth, originalHeight);
 
     if (saveDropdown1.selection.text == "png") {
         var file = new File(inputSavePath.text + "/" + inputName.text + ".png");
@@ -225,9 +269,11 @@ btn3.onClick = function () {
     }
 
     doc.resizeImage(originalWidth, originalHeight);
+    doc.activeHistoryState = previousState;
 
 };
 
+//single combine
 btn4.onClick = function () {
 
     if (doc.layers.length >= 3) {
@@ -245,7 +291,10 @@ btn4.onClick = function () {
         var metalLayer = doc.layers.getByName(metalDropdown1.selection.text)
         var AOLayer = doc.layers.getByName(aoDropdown1.selection.text)
     }
-    
+
+    roughLayer.name = roughLayer.name;
+    metalLayer.name = metalLayer.name;
+    AOLayer.name = AOLayer.name;
 
     doc.activeLayer = roughLayer;
     advancedBlend(true, false, false);
@@ -257,36 +306,80 @@ btn4.onClick = function () {
     advancedBlend(false, false, true);
 };
 
+combineSavebtn.onClick = function () {
+    btn3.onClick();
+};
+
 combineAllbtn.onClick = function () {
     var imgTypeKeys = ["albedo", "AO", "emissive", "metallic", "normal", "roughness"];
 
     for (var i = 0; i < activeDocument.layerSets.length; i++) {
-        activeDocument.layerSets[i].layerSets.add();
-        activeDocument.layerSets[i].layerSets[0].name = "rgb";
 
-        for (var e = 0; e < activeDocument.layerSets[i].artLayers.length; e++) {
+        //if layers have not been already sorted
+        if (!layerWithNameExist(activeDocument.layerSets[i].layers, "rgb")) {
+            activeDocument.layerSets[i].layerSets.add();
+            activeDocument.layerSets[i].layerSets[0].name = "rgb";
 
-            if (hasKey(activeDocument.layerSets[i].artLayers[e].name, "AO")) {
-                activeDocument.layerSets[i].artLayers[e].move(activeDocument.layerSets[i].layerSets[0], ElementPlacement.INSIDE);
-            }
-            else if (hasKey(activeDocument.layerSets[i].artLayers[e].name, "metallic")) {
-                activeDocument.layerSets[i].artLayers[e].move(activeDocument.layerSets[i].layerSets[0], ElementPlacement.INSIDE);
-            }
-            else if (hasKey(activeDocument.layerSets[i].artLayers[e].name, "roughness")) {
-                activeDocument.layerSets[i].artLayers[e].move(activeDocument.layerSets[i].layerSets[0], ElementPlacement.INSIDE);
+            for (var e = 0; e < activeDocument.layerSets[i].artLayers.length; e++) {
+
+                if (hasKey(activeDocument.layerSets[i].artLayers[e].name, "AO")) {
+                    activeDocument.layerSets[i].artLayers[e].move(activeDocument.layerSets[i].layerSets[0], ElementPlacement.INSIDE);
+                }
+                else if (hasKey(activeDocument.layerSets[i].artLayers[e].name, "metallic")) {
+                    activeDocument.layerSets[i].artLayers[e].move(activeDocument.layerSets[i].layerSets[0], ElementPlacement.INSIDE);
+                }
+                else if (hasKey(activeDocument.layerSets[i].artLayers[e].name, "roughness")) {
+                    activeDocument.layerSets[i].artLayers[e].move(activeDocument.layerSets[i].layerSets[0], ElementPlacement.INSIDE);
+                }
             }
         }
 
         if (activeDocument.layerSets[i].layerSets.length > 0) {
             if (activeDocument.layerSets[i].layerSets[0].artLayers.length == 3) {
-                doc.activeLayer = activeDocument.layerSets[i].layerSets[0].artLayers[2];//ao
-                advancedBlend(true, false, false);
 
-                doc.activeLayer = activeDocument.layerSets[i].layerSets[0].artLayers[1];//metal
-                advancedBlend(false, true, false);
+                //red
+                if (redDropdown1.selection.text == "Metal") {
+                    doc.activeLayer = activeDocument.layerSets[i].layerSets[0].artLayers[1];//metal
+                    advancedBlend(true, false, false);
+                }
+                else if (redDropdown1.selection.text == "Roughness") {
+                    doc.activeLayer = activeDocument.layerSets[i].layerSets[0].artLayers[0];//ao
+                    advancedBlend(true, false, false);
+                }
+                else if (redDropdown1.selection.text == "AO") {
+                    doc.activeLayer = activeDocument.layerSets[i].layerSets[0].artLayers[2];//roughness
+                    advancedBlend(true, false, false);
+                }
 
-                doc.activeLayer = activeDocument.layerSets[i].layerSets[0].artLayers[0];//roughness
-                advancedBlend(false, false, true);
+                //green
+                if (greenDropdown1.selection.text == "Metal") {
+                    doc.activeLayer = activeDocument.layerSets[i].layerSets[0].artLayers[1];//metal
+                    advancedBlend(false, true, false);
+                }
+                else if (greenDropdown1.selection.text == "Roughness") {
+                    doc.activeLayer = activeDocument.layerSets[i].layerSets[0].artLayers[0];//ao
+                    advancedBlend(false, true, false);
+                }
+                else if (greenDropdown1.selection.text == "AO") {
+                    doc.activeLayer = activeDocument.layerSets[i].layerSets[0].artLayers[2];//roughness
+                    advancedBlend(false, true, false);
+                }
+
+                //blue
+                if (blueDropdown1.selection.text == "Metal") {
+                    doc.activeLayer = activeDocument.layerSets[i].layerSets[0].artLayers[1];//metal
+                    advancedBlend(false, false, true);
+                }
+                else if (blueDropdown1.selection.text == "Roughness") {
+                    doc.activeLayer = activeDocument.layerSets[i].layerSets[0].artLayers[0];//roughness
+                    advancedBlend(false, false, true);
+                }
+                else if (blueDropdown1.selection.text == "AO") {
+                    doc.activeLayer = activeDocument.layerSets[i].layerSets[0].artLayers[2];//ao
+                    advancedBlend(false, false, true);
+                }
+
+                
             }
             else {
                 alert("there are more than 3 layers or less than 3 layers in the combination group");
@@ -306,6 +399,8 @@ combineAllSavebtn.onClick = function () {
     var originalHeight = activeDocument.height;
     var resizeWidth = Math.pow(2, slider.value);
     var resizeHeight = Math.pow(2, slider.value);
+
+    var previousState = doc.activeHistoryState;
 
     activeDocument.resizeImage(resizeWidth, resizeHeight);
 
@@ -331,6 +426,7 @@ combineAllSavebtn.onClick = function () {
     }
 
     activeDocument.resizeImage(originalWidth, originalHeight);
+    doc.activeHistoryState = previousState;
 
 };
 
@@ -341,6 +437,7 @@ btnSaveAll.onClick = function () {
     var resizeWidth = Math.pow(2, slider.value);
     var resizeHeight = Math.pow(2, slider.value);
 
+    var previousState = doc.activeHistoryState;
     activeDocument.resizeImage(resizeWidth, resizeHeight);
 
     //disable combination layersets
@@ -381,6 +478,7 @@ btnSaveAll.onClick = function () {
     }
 
     activeDocument.resizeImage(originalWidth, originalHeight);
+    doc.activeHistoryState = previousState;
 };
 
 btnLoadAll.onClick = function () {
@@ -442,6 +540,7 @@ btnMegaLoadCompressSaveAll.onClick = function () {
         var resizeWidth = Math.pow(2, slider.value);
         var resizeHeight = Math.pow(2, slider.value);
 
+        var previousState = doc.activeHistoryState;
         activeDocument.resizeImage(resizeWidth, resizeHeight);
 
         //var file = new File(doc.path + "/" + doc.name + ".png");
@@ -459,6 +558,7 @@ btnMegaLoadCompressSaveAll.onClick = function () {
         }
 
         activeDocument.resizeImage(originalWidth, originalHeight);
+        doc.activeHistoryState = previousState;
 
         activeDocument.close(SaveOptions.DONOTSAVECHANGES);
     }
@@ -494,6 +594,16 @@ function hasKey(str, substr) {
 function existInArr(arr, element) {
     for (var i = 0; i < arr.length; i++) {
         if (arr[i] == element) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function layerWithNameExist(arr, name) {
+    for (var i = 0; i < arr.length; i++) {
+        if (arr[i].name == name) {
             return true;
         }
     }
