@@ -73,7 +73,7 @@ if (activeDocument.saved) {
     inputLoadPath.text = activeDocument.path;
 }
 else {
-    inputLoadPath.text = "";
+    inputLoadPath.text = "                                                                                  ";
 }
 
 var statictext1 = panel1.add("statictext", undefined, undefined, { name: "statictext1" });
@@ -106,7 +106,7 @@ if (activeDocument.saved) {
     inputSavePath.text = activeDocument.path;
 }
 else {
-    inputSavePath.text = "";
+    inputSavePath.text = "                                                                                  ";
 }
 
 var statictext2 = panel2.add("statictext", undefined, undefined, { name: "statictext2" });
@@ -152,6 +152,7 @@ currValText.alignment = ["center", "top"];
 
 var slider = panel3.add("slider", undefined, 0, 0, nearestPow2(doc.width));
 slider.preferredSize.width = 100;
+slider.value = nearestPow2(doc.width);
 
 currValText.text = slider.value.toString();
 
@@ -159,7 +160,7 @@ var statictext4 = panel3.add("statictext", undefined, undefined, { name: "static
 statictext4.text = "Final Resolution:";
 
 var currSizeText = panel3.add("statictext", undefined, undefined, { name: "currSizeText" });
-currSizeText.text = nearestPow2(doc.width).toString();
+currSizeText.text = Math.pow(2, slider.value).toString();
 currSizeText.alignment = ["center", "top"];
 
 // PANEL4 COMBINE
@@ -277,7 +278,7 @@ slider.onChanging = function () {
 
 //simple save
 btn3.onClick = function () {
-    if (inputSavePath.text == "") {
+    if (inputSavePath.text == "                                                                                  ") {
         alert("error! save path is empty");
         return;
     }
@@ -436,7 +437,7 @@ combineAllbtn.onClick = function () {
 };
 
 combineAllSavebtn.onClick = function () {
-    if (inputSavePath.text == "") {
+    if (inputSavePath.text == "                                                                                  ") {
         alert("error! save path is empty");
         return;
     }
@@ -478,7 +479,7 @@ combineAllSavebtn.onClick = function () {
 };
 
 btnSaveAll.onClick = function () {
-    if (inputSavePath.text == "") {
+    if (inputSavePath.text == "                                                                                  ") {
         alert("error! save path is empty");
         return;
     }
@@ -537,7 +538,7 @@ btnSaveAll.onClick = function () {
 
 btnLoadAll.onClick = function () {
 
-    if (inputLoadPath.text == "") {
+    if (inputLoadPath.text == "                                                                                  ") {
         alert("error! load path is empty");
         return;
     }
