@@ -1,5 +1,3 @@
-//activeHistorystate
-//abrir file explorer para seleccionar paths
 
 if (documents.length == 0) {
     alert("Select a texture");
@@ -77,7 +75,7 @@ else {
 }
 
 var statictext1 = panel1.add("statictext", undefined, undefined, { name: "statictext1" });
-statictext1.text = "Extension to load";
+statictext1.text = "Extension to load: ";
 
 //var inputLoadExtension = panel1.add('edittext {properties: {name: "inputLoadExtension"}}');
 //inputLoadExtension.text = "dds";
@@ -88,6 +86,7 @@ loadDropdown1.selection = 0;
 
 var btnLoadAll = panel1.add("button", undefined, undefined, { name: "btnLoadAll" });
 btnLoadAll.text = "Open all files in folder";
+btnLoadAll.helpTip = "load all images from a folder and groups the files into layersets";
 
 // PANEL2
 // ======
@@ -110,7 +109,7 @@ else {
 }
 
 var statictext2 = panel2.add("statictext", undefined, undefined, { name: "statictext2" });
-statictext2.text = "Extension to save";
+statictext2.text = "Extension to save: ";
 
 var saveDropdown1_array = ["png", "dds"];
 var saveDropdown1 = panel2.add("dropdownlist", undefined, undefined, { name: "extension", items: saveDropdown1_array });
@@ -118,12 +117,16 @@ saveDropdown1.selection = 0;
 
 var inputName = panel2.add('edittext {properties: {name: "inputName"}}');
 inputName.text = doc.name;
+inputName.helpTip = "write the name you want the saved image to have. (only for the single file [Save button])";
+
 
 var btn3 = panel2.add("button", undefined, undefined, { name: "btn3" });
 btn3.text = "Save";
+btn3.helpTip = "save document as image";
 
 var btnSaveAll = panel2.add("button", undefined, undefined, { name: "btnSaveAll" });
 btnSaveAll.text = "Save each layer as image";
+btnSaveAll.helpTip = "Save each layer as independent image using the layer's name. Only works for group ordered layers. (use [open all files in folder] button to load and group images into layers)";
 
 // GROUP1
 // ======
@@ -218,11 +221,19 @@ metalDropdown1.selection = 0;
 var aoDropdown1 = combTab1.add("dropdownlist", undefined, undefined, { name: "extension", items: layersDropdown1_array });
 aoDropdown1.selection = 0; 
 
+roughDropdown1.enabled = false;
+metalDropdown1.enabled = false;
+aoDropdown1.enabled = false;
+
 var btn4 = combTab1.add("button", undefined, undefined, { name: "btn4" });
 btn4.text = "combine";
+btn4.helpTip = "makes the selected layers ocupy only one channel of the final image";
+
 
 var combineSavebtn = combTab1.add("button", undefined, undefined, { name: "combineAllSavebtn" });
 combineSavebtn.text = "save combination";
+combineSavebtn.helpTip = "save combination as image";
+
 
 //multi combination
 var statictext5 = combTab2.add("statictext", undefined, undefined, { name: "statictext5" });
@@ -241,9 +252,11 @@ blueDropdown1.selection = 0;
 
 var combineAllbtn = combTab2.add("button", undefined, undefined, { name: "combineAllbtn" });
 combineAllbtn.text = "combine for all groups";
+combineAllbtn.helpTip = "if the layers are grouped, combines the AO, roughness and metalic layers";
 
 var combineAllSavebtn = combTab2.add("button", undefined, undefined, { name: "combineAllSavebtn" });
 combineAllSavebtn.text = "save all combinated sets";
+combineAllSavebtn.helpTip = "if the layers are grouped, saves each combination grupo into images";
 
 
 // PANEL5
@@ -307,6 +320,12 @@ btn3.onClick = function () {
     doc.activeHistoryState = previousState;
 
 };
+
+checkbox1.onClick = function () {
+    roughDropdown1.enabled = checkbox1.value;
+    metalDropdown1.enabled = checkbox1.value;
+    aoDropdown1.enabled = checkbox1.value;
+}
 
 //single combine
 btn4.onClick = function () {
